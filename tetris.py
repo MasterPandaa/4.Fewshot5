@@ -1,6 +1,7 @@
-import pygame
 import random
 import sys
+
+import pygame
 
 # -----------------------------
 # Konstanta permainan
@@ -163,13 +164,13 @@ T = [
 SHAPES = [S, Z, I, O, J, L, T]
 # Warna untuk masing-masing shape
 SHAPE_COLORS = [
-    (48, 226, 133),   # S - hijau
-    (226, 48, 83),    # Z - merah
-    (48, 168, 226),   # I - cyan
-    (226, 205, 48),   # O - kuning
-    (48, 83, 226),    # J - biru
-    (226, 143, 48),   # L - oranye
-    (162, 48, 226),   # T - ungu
+    (48, 226, 133),  # S - hijau
+    (226, 48, 83),  # Z - merah
+    (48, 168, 226),  # I - cyan
+    (226, 205, 48),  # O - kuning
+    (48, 83, 226),  # J - biru
+    (226, 143, 48),  # L - oranye
+    (162, 48, 226),  # T - ungu
 ]
 
 
@@ -186,6 +187,7 @@ class Piece:
 # Utility Grid dan Game Logic
 # -----------------------------
 
+
 def create_grid(locked_positions):
     grid = [[BLACK for _ in range(COLS)] for _ in range(ROWS)]
 
@@ -201,7 +203,7 @@ def convert_shape_format(piece):
 
     for i, line in enumerate(rotation_pattern):
         for j, char in enumerate(line):
-            if char == '0':
+            if char == "0":
                 positions.append((piece.x + j, piece.y + i))
 
     # offset kecil (karena tetromino didefinisikan di 4x4)
@@ -209,7 +211,9 @@ def convert_shape_format(piece):
 
 
 def valid_space(piece, grid):
-    accepted_positions = [(j, i) for i in range(ROWS) for j in range(COLS) if grid[i][j] == BLACK]
+    accepted_positions = [
+        (j, i) for i in range(ROWS) for j in range(COLS) if grid[i][j] == BLACK
+    ]
     formatted = convert_shape_format(piece)
 
     for pos in formatted:
@@ -221,7 +225,7 @@ def valid_space(piece, grid):
 
 def check_lost(positions):
     # Kalah bila ada blok terkunci di baris y < 1 (masuk ke area spawn)
-    for (x, y) in positions:
+    for x, y in positions:
         if y < 1:
             return True
     return False
@@ -232,7 +236,7 @@ def get_shape():
 
 
 def draw_text_middle(surface, text, size, color):
-    font = pygame.font.SysFont('arial', size, bold=True)
+    font = pygame.font.SysFont("arial", size, bold=True)
     label = font.render(text, True, color)
 
     surface.blit(
@@ -269,11 +273,17 @@ def draw_grid(surface, grid):
     # Gambar kotak-kotak grid
     for i in range(ROWS):
         pygame.draw.line(
-            surface, GREY, (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE), (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE)
+            surface,
+            GREY,
+            (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE),
+            (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE),
         )
     for j in range(COLS):
         pygame.draw.line(
-            surface, GREY, (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT)
+            surface,
+            GREY,
+            (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y),
+            (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT),
         )
 
 
@@ -281,27 +291,37 @@ def draw_window(surface, grid, score=0, high_score=0):
     surface.fill((18, 18, 18))
 
     # Judul
-    font = pygame.font.SysFont('arial', 36, bold=True)
-    label = font.render('TETRIS', True, WHITE)
+    font = pygame.font.SysFont("arial", 36, bold=True)
+    label = font.render("TETRIS", True, WHITE)
     surface.blit(label, (SCREEN_WIDTH / 2 - label.get_width() / 2, 10))
 
     # Skor
-    small_font = pygame.font.SysFont('arial', 20)
-    score_label = small_font.render(f'Score: {score}', True, WHITE)
+    small_font = pygame.font.SysFont("arial", 20)
+    score_label = small_font.render(f"Score: {score}", True, WHITE)
     surface.blit(score_label, (10, 10))
 
-    high_label = small_font.render(f'High: {high_score}', True, WHITE)
+    high_label = small_font.render(f"High: {high_score}", True, WHITE)
     surface.blit(high_label, (10, 35))
 
     # Area permainan
-    pygame.draw.rect(surface, WHITE, (TOP_LEFT_X - 2, TOP_LEFT_Y - 2, PLAY_WIDTH + 4, PLAY_HEIGHT + 4), 2)
+    pygame.draw.rect(
+        surface,
+        WHITE,
+        (TOP_LEFT_X - 2, TOP_LEFT_Y - 2, PLAY_WIDTH + 4, PLAY_HEIGHT + 4),
+        2,
+    )
 
     for i in range(ROWS):
         for j in range(COLS):
             pygame.draw.rect(
                 surface,
                 grid[i][j],
-                (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE),
+                (
+                    TOP_LEFT_X + j * BLOCK_SIZE,
+                    TOP_LEFT_Y + i * BLOCK_SIZE,
+                    BLOCK_SIZE,
+                    BLOCK_SIZE,
+                ),
                 0,
             )
 
@@ -309,8 +329,8 @@ def draw_window(surface, grid, score=0, high_score=0):
 
 
 def draw_next_shape(piece, surface):
-    font = pygame.font.SysFont('arial', 20, bold=True)
-    label = font.render('Next:', True, WHITE)
+    font = pygame.font.SysFont("arial", 20, bold=True)
+    label = font.render("Next:", True, WHITE)
 
     sx = TOP_LEFT_X + PLAY_WIDTH + 10
     sy = TOP_LEFT_Y + 60
@@ -321,11 +341,16 @@ def draw_next_shape(piece, surface):
 
     for i, line in enumerate(rotation_pattern):
         for j, char in enumerate(line):
-            if char == '0':
+            if char == "0":
                 pygame.draw.rect(
                     surface,
                     piece.color,
-                    (sx + j * BLOCK_SIZE // 2, sy + i * BLOCK_SIZE // 2, BLOCK_SIZE // 2, BLOCK_SIZE // 2),
+                    (
+                        sx + j * BLOCK_SIZE // 2,
+                        sy + i * BLOCK_SIZE // 2,
+                        BLOCK_SIZE // 2,
+                        BLOCK_SIZE // 2,
+                    ),
                     0,
                 )
 
@@ -457,7 +482,7 @@ def main(win):
 
     # Layar Game Over
     draw_window(win, grid, score, high_score)
-    draw_text_middle(win, 'Game Over', 40, WHITE)
+    draw_text_middle(win, "Game Over", 40, WHITE)
     pygame.display.update()
     pygame.time.delay(2000)
 
@@ -465,12 +490,12 @@ def main(win):
 def main_menu():
     pygame.init()
     win = pygame.display.set_mode((SCREEN_WIDTH + 150, SCREEN_HEIGHT))
-    pygame.display.set_caption('Tetris - Pygame')
+    pygame.display.set_caption("Tetris - Pygame")
 
     running = True
     while running:
         win.fill((18, 18, 18))
-        draw_text_middle(win, 'Tekan ENTER untuk mulai', 24, WHITE)
+        draw_text_middle(win, "Tekan ENTER untuk mulai", 24, WHITE)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -482,5 +507,5 @@ def main_menu():
     pygame.quit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main_menu()
